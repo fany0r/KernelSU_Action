@@ -269,7 +269,7 @@ jobs:
         # 检查 Image.lz4 是否存在，针对 google ixel
         if [ -f android-kernel/out/arch/arm64/boot/Image.lz4 ]; then
             echo "CHECK_FILE_IMAGE=true" >> $GITHUB_ENV
-            find android-kernel/out/arch/arm64/boot/dts/ -type f -name "*.dtb" -exec cat {} + > out/arch/arm64/boot/kernel_dtb
+            find android-kernel/out/arch/arm64/boot/dts/ -type f -name "*.dtb" -exec cat {} + > android-kernel/out/arch/arm64/boot/kernel_dtb
             mv android-kernel/out/arch/arm64/boot/Image.lz4 android-kernel/out/arch/arm64/boot/kernel
             ls -lh android-kernel/out/arch/arm64/boot/Image.lz4 android-kernel/out/arch/arm64/boot/kernel_dtb
         else
