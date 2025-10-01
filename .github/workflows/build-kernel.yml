@@ -270,8 +270,8 @@ jobs:
         if [ -f android-kernel/out/arch/arm64/boot/Image.lz4 ]; then
             echo "CHECK_FILE_IMAGE=true" >> $GITHUB_ENV
             find android-kernel/out/arch/arm64/boot/dts/ -type f -name "*.dtb" -exec cat {} + > android-kernel/out/arch/arm64/boot/kernel_dtb
-            mv android-kernel/out/arch/arm64/boot/Image.lz4 android-kernel/out/arch/arm64/boot/kernel
             ls -lh android-kernel/out/arch/arm64/boot/Image.lz4 android-kernel/out/arch/arm64/boot/kernel_dtb
+            mv android-kernel/out/arch/arm64/boot/Image.lz4 android-kernel/out/arch/arm64/boot/kernel
         else
             echo "CHECK_FILE_IMAGE=false" >> $GITHUB_ENV
         fi
