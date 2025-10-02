@@ -4,7 +4,7 @@ on:
 
 jobs:
   build:
-    name: Build Kernel by ${{ github.actor }}
+    name: Build Kernel
     runs-on: ubuntu-22.04
     env:
       CCACHE_COMPILERCHECK: "%compiler% -dumpmachine; %compiler% -dumpversion"
@@ -46,6 +46,7 @@ jobs:
             ADD_OVERLAYFS_CONFIG
             DISABLE_CC_WERROR
             APPLY_KSU_PATCH
+            OFF_KPROBES
             USE_CUSTOM_ANYKERNEL3
             CUSTOM_ANYKERNEL3_SOURCE
             CUSTOM_ANYKERNEL3_BRANCH
@@ -219,11 +220,22 @@ jobs:
                 echo "CONFIG_KSU=y" >> arch/${{ env.ARCH }}/configs/${{ env.KERNEL_CONFIG }}
             fi
         fi
-        if [ ${{ env.ADD_KPROBES_CONFIG }} = true -a ${{ env.APPLY_KSU_PATCH }} != true ]; then
-            # echo "CONFIG_MODULES=y" >> arch/${{ env.ARCH }}/configs/${{ env.KERNEL_CONFIG }}
-            echo "CONFIG_KPROBES=y" >> arch/${{ env.ARCH }}/configs/${{ env.KERNEL_CONFIG }}
-            echo "CONFIG_HAVE_KPROBES=y" >> arch/${{ env.ARCH }}/configs/${{ env.KERNEL_CONFIG }}
-            echo "CONFIG_KPROBE_EVENTS=y" >> arch/${{ env.ARCH }}/configs/${{ env.KERNEL_CONFIG }}
+        if [ ${{ env.OFF_KPROBES }} = true ]; then
+            if grep -q "CONFIG_KPROBES=y" arch/${{ env.ARCH }}/configs/${{ env.KERNEL_CONFIG }}; then
+              sed -i 's/CONFIG_KPROBES=y/# CONFIG_KPROBES is not set/g' arch/...
+            else
+              echo "# CONFIG_KPROBES is not set" >> arch/${{ env.ARCH }}/configs/${{ env.KERNEL_CONFIG }}
+            fi
+            if grep -q "CONFIG_HAVE_KPROBES=y" arch/${{ env.ARCH }}/configs/${{ env.KERNEL_CONFIG }}; then
+              sed -i 's/CONFIG_HAVE_KPROBES=y/# CONFIG_HAVE_KPROBES is not set/g' arch/${{ env.ARCH }}/configs/${{ env.KERNEL_CONFIG }};
+            else
+              echo "# CONFIG_HAVE_KPROBES is not set" >> arch/${{ env.ARCH }}/configs/${{ env.KERNEL_CONFIG }}
+            fi
+            if grep -q "CONFIG_KPROBE_EVENTS=y" arch/${{ env.ARCH }}/configs/${{ env.KERNEL_CONFIG }}; then
+              sed -i 's/CONFIG_KPROBE_EVENTS=y/# CONFIG_KPROBE_EVENTS is not set/g' arch/${{ env.ARCH }}/configs/${{ env.KERNEL_CONFIG }}
+            else
+              echo "# CONFIG_KPROBE_EVENTS is not set" >> arch/${{ env.ARCH }}/configs/${{ env.KERNEL_CONFIG }}
+            fi
         fi
         if [ ${{ env.ADD_OVERLAYFS_CONFIG }} = true ]; then
             echo "CONFIG_OVERLAY_FS=y" >> arch/${{ env.ARCH }}/configs/${{ env.KERNEL_CONFIG }}
