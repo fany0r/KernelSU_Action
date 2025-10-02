@@ -222,7 +222,7 @@ jobs:
         fi
         if [ ${{ env.OFF_KPROBES }} = true ]; then
             if grep -q "CONFIG_KPROBES=y" arch/${{ env.ARCH }}/configs/${{ env.KERNEL_CONFIG }}; then
-              sed -i 's/CONFIG_KPROBES=y/# CONFIG_KPROBES is not set/g' arch/...
+              sed -i 's/CONFIG_KPROBES=y/# CONFIG_KPROBES is not set/g' arch/${{ env.ARCH }}/configs/${{ env.KERNEL_CONFIG }}
             else
               echo "# CONFIG_KPROBES is not set" >> arch/${{ env.ARCH }}/configs/${{ env.KERNEL_CONFIG }}
             fi
